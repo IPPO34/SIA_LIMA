@@ -110,6 +110,7 @@
         <span class="estado" id="estado"><span class="punto"></span><span id="texto-estado">Conectando…</span></span>
         <button class="boton" id="btn-alertas" aria-pressed="false">🔔 Alertas</button>
         <button class="boton" id="btn-exportar">⬇ Exportar</button>
+        <button class="boton" id="btn-simular" title="Publica un evento de prueba sin necesitar el ESP32">🧪 Simular evento</button>
       </div>
     </header>
 
@@ -228,6 +229,22 @@
         a.click();
       }
       $("btn-exportar").addEventListener("click", exportar);
+
+      function simularEvento() {
+        if (!client.connected) {
+          ponerEstado("error", "No conectado todavía, espera un momento");
+          return;
+        }
+        const payload = JSON.stringify({
+          tipo: "evento_acustico",
+          timestamp_ms: Date.now(),
+          lat: -12.0464 + (Math.random() - 0.5) * 0.01,
+          lng: -77.0428 + (Math.random() - 0.5) * 0.01,
+          gps_valido: true,
+        });
+        client.publish(TOPIC, payload);
+      }
+      $("btn-simular").addEventListener("click", simularEvento);
 
       // ---------------------------------------------------------------- dibujo
       function dibujarEventos() {
